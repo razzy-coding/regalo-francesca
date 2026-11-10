@@ -42,7 +42,7 @@
     background-color: var(--paper);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420' viewBox='0 0 420 420' fill='none' stroke='%23000' stroke-opacity='.13' stroke-width='1.4'%3E%3Cpath d='M-20 80 C60 40 120 120 210 90 S350 30 440 70'/%3E%3Cpath d='M-20 120 C70 80 130 160 215 130 S355 75 440 110'/%3E%3Cpath d='M-20 165 C80 125 140 205 220 175 S360 120 440 155'/%3E%3Cpath d='M-20 300 C50 260 110 340 200 310 S340 250 440 290'/%3E%3Cpath d='M-20 345 C60 305 120 385 205 355 S345 295 440 335'/%3E%3Cellipse cx='320' cy='230' rx='38' ry='22'/%3E%3Cellipse cx='320' cy='230' rx='62' ry='38'/%3E%3Cellipse cx='90' cy='230' rx='24' ry='14'/%3E%3C/svg%3E");
     color: var(--ink);
-    font-family: 'Red Hat Display', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-family: 'Karla', system-ui, -apple-system, 'Segoe UI', sans-serif;
     font-size: 1.0625rem;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
@@ -63,7 +63,7 @@
   .screen[hidden] { display: none; }
 
   h1, h2 {
-    font-family: 'Alfa Slab One', 'Rockwell', Georgia, serif;
+    font-family: 'Patua One', 'Rockwell', Georgia, serif;
     font-weight: 400;
     color: var(--forest);
     margin: 0;
@@ -243,9 +243,9 @@
   <section class="screen intro enter" id="intro">
     <div class="camp" aria-hidden="true">🏕️</div>
     <h1>Francesca, sopravviveresti nella natura selvaggia?</h1>
-    <p class="lead">Quattro situazioni estreme. Due possibilità per ognuna. Scegli con saggezza (o almeno provaci).</p>
-    <p class="small">Nessuna formica è stata maltrattata durante la creazione di questo test.</p>
-    <button class="go push" id="startBtn">Inizia la spedizione</button>
+    <p class="lead">Quattro scenari estremi. Due possibilità per ognuna. Scegli con saggezza (o almeno provaci).</p>
+    <p class="small">Nessun animale è stato maltrattato durante la creazione di questo test, escluso RAZ</p>
+    <button class="go push" id="startBtn">Inizia la spedizione!</button>
   </section>
 
   <!-- DOMANDA -->
@@ -282,7 +282,7 @@
       <dl id="vDetails"></dl>
     </div>
 
-    <p class="slogan">Sopravvivere is bettere than curare</p>
+    <p class="slogan">Sopravvivere is bettere than curare!</p>
     <p class="sign" id="vSign"></p>
     <button class="restart" id="restartBtn">Rifai il test (tanto non cambia niente)</button>
   </section>
@@ -296,10 +296,10 @@
    ========================================================= */
 const REGALO = {
   corso:  "Corso di sopravvivenza nella natura",
-  dove:   "[luogo del corso]",
-  quando: "[data del corso]",
+  dove:   "Lombardore",
+  quando: "A tua scelta",
   con:    "[ente o istruttore]",
-  firma:  "Matilde & [il tuo nome]"
+  firma:  "Matilde & Razzy"
 };
 
 /* Le 4 situazioni. Tutte le risposte sono volutamente sbagliate. */
@@ -308,10 +308,10 @@ const DOMANDE = [
     emoji: "🌲📵",
     testo: "Ti sei persa nel bosco, sta calando il sole e il telefono non prende. Cosa fai?",
     risposte: [
-      { t: "Urlo “c’è qualcuno con il Wi-Fi?” agli scoiattoli.",
-        c: "Gli scoiattoli hanno il 5G solo nei parchi di città. E comunque la password non te la danno." },
-      { t: "Mi siedo e aspetto che Google Maps si senta in colpa.",
-        c: "Google Maps non prova sensi di colpa. Tu invece li proverai verso le 3 di notte." }
+      { t: "Urlo “a voi prende Netflix?” agli scoiattoli.",
+        c: "Gli scoiattoli guardano solo Disney+, non hanno mai visto Rick & Morty". },
+      { t: "Mi siedo e aspetto di finire la playlist “MixLatino”.",
+        c: "MixLatino non finirò mai, ma smetterei di ascoltarla verso le 3 di notte." }
     ],
     odds: "Probabilità di sopravvivenza: 41%"
   },
@@ -330,8 +330,8 @@ const DOMANDE = [
     emoji: "🔥🥶",
     testo: "Arriva la notte e fa un freddo cane. Come accendi il fuoco?",
     risposte: [
-      { t: "Fisso la legna intensamente finché non si imbarazza e prende fuoco da sola.",
-        c: "La legna non si è imbarazzata. Ti ha guardata male, però." },
+      { t: "Parlo alla legna dei miei problemi finché non prende fuoco da sola.",
+        c: "Grazie a Dio la legna non ha orecchie, alrimenti avrebbe preso fuoco dopo il terzo “è chiaro che”." },
       { t: "Strofino due bastoncini… di pesce surgelati.",
         c: "Hai ottenuto due bastoncini di pesce un po’ più tiepidi. È un inizio, ma non è un fuoco." }
     ],
@@ -341,10 +341,10 @@ const DOMANDE = [
     emoji: "🐻👀",
     testo: "Un orso enorme si avvicina lentamente al tuo accampamento.",
     risposte: [
-      { t: "Gli offro un abbraccio: secondo me anche lui ha solo bisogno d’affetto.",
-        c: "L’orso ha apprezzato il gesto. Soprattutto la parte in cui ti sei avvicinata da sola." },
-      { t: "Mi fingo un cespuglio e canticchio per sembrare più credibile.",
-        c: "I cespugli non canticchiano. L’orso lo sa. Ora lo sai anche tu." }
+      { t: "Gli offro un abbraccio con un secondo fine: secondo me è di Bogotà.",
+        c: "L’orso non ha apprezzato la tua iniziativa. Da quel giorno odia le donne con gli occhi azzurri." },
+      { t: "Lo placco a sopresa ma è un placcaggio basso.",
+        c: "Una volpe fischia il fallo e ti danno un cartellino rosso, sei fuori dal bosco per 20 minuti." }
     ],
     odds: "Probabilità di sopravvivenza: 0,3%"
   }
