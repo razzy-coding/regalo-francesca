@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Francesca, sopravviveresti?</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏕️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Karla:wght@400;600;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #E4DDC3;        /* carta topografica */
+    --contour: #B9AE86;
+    --forest: #1F3A2B;
+    --moss: #4E6B33;
+    --wood: #7A4A26;
+    --wood-dark: #4F2E16;
+    --flare: #E2601F;        /* arancione da razzo di segnalazione */
+    --ink: #1C2219;
+    --note: #F6F1DF;
+    --on-wood: #FBEFD9;
+    color-scheme: light;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #16251B;
+      --contour: #2A4232;
+      --forest: #CFE0B8;
+      --moss: #9DBB76;
+      --note: #22362A;
+      --ink: #E9E6D6;
+      color-scheme: dark;
+    }
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background-color: var(--paper);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420' viewBox='0 0 420 420' fill='none' stroke='%23000' stroke-opacity='.13' stroke-width='1.4'%3E%3Cpath d='M-20 80 C60 40 120 120 210 90 S350 30 440 70'/%3E%3Cpath d='M-20 120 C70 80 130 160 215 130 S355 75 440 110'/%3E%3Cpath d='M-20 165 C80 125 140 205 220 175 S360 120 440 155'/%3E%3Cpath d='M-20 300 C50 260 110 340 200 310 S340 250 440 290'/%3E%3Cpath d='M-20 345 C60 305 120 385 205 355 S345 295 440 335'/%3E%3Cellipse cx='320' cy='230' rx='38' ry='22'/%3E%3Cellipse cx='320' cy='230' rx='62' ry='38'/%3E%3Cellipse cx='90' cy='230' rx='24' ry='14'/%3E%3C/svg%3E");
+    color: var(--ink);
+    font-family: 'Karla', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420' viewBox='0 0 420 420' fill='none' stroke='%23fff' stroke-opacity='.07' stroke-width='1.4'%3E%3Cpath d='M-20 80 C60 40 120 120 210 90 S350 30 440 70'/%3E%3Cpath d='M-20 120 C70 80 130 160 215 130 S355 75 440 110'/%3E%3Cpath d='M-20 165 C80 125 140 205 220 175 S360 120 440 155'/%3E%3Cpath d='M-20 300 C50 260 110 340 200 310 S340 250 440 290'/%3E%3Cpath d='M-20 345 C60 305 120 385 205 355 S345 295 440 335'/%3E%3Cellipse cx='320' cy='230' rx='38' ry='22'/%3E%3Cellipse cx='320' cy='230' rx='62' ry='38'/%3E%3Cellipse cx='90' cy='230' rx='24' ry='14'/%3E%3C/svg%3E"); }
+  }
+
+  main {
+    min-height: 100%;
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .screen { display: flex; flex-direction: column; flex: 1; gap: 1.5rem; }
+  .screen[hidden] { display: none; }
+
+  h1, h2 {
+    font-family: 'Alfa Slab One', 'Rockwell', Georgia, serif;
+    font-weight: 400;
+    color: var(--forest);
+    margin: 0;
+    line-height: 1.12;
+    letter-spacing: .01em;
+  }
+  h1 { font-size: clamp(2.1rem, 9vw, 3rem); }
+  h2 { font-size: clamp(1.45rem, 6vw, 1.85rem); }
+  p { margin: 0; }
+
+  /* ---------- sentiero di avanzamento ---------- */
+  .trail {
+    display: flex; align-items: center; gap: 0;
+    padding: .25rem 0;
+  }
+  .trail .seg { flex: 1; height: 0; border-top: 3px dashed var(--contour); }
+  .trail .seg.done { border-top-color: var(--flare); }
+  .trail .dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 3px solid var(--contour); background: var(--paper); flex: none;
+  }
+  .trail .dot.done { border-color: var(--flare); background: var(--flare); }
+  .trail .dot.now { border-color: var(--flare); }
+  .trail .flag { font-size: 1.25rem; line-height: 1; flex: none; margin-left: .2rem; }
+
+  /* ---------- cartello di legno ---------- */
+  .board {
+    position: relative;
+    background-color: var(--wood);
+    background-image:
+      repeating-linear-gradient(178deg, rgba(0,0,0,.0) 0 9px, rgba(0,0,0,.09) 9px 11px, rgba(0,0,0,0) 11px 23px),
+      repeating-linear-gradient(181deg, rgba(255,255,255,.05) 0 3px, rgba(0,0,0,0) 3px 7px);
+    color: var(--on-wood);
+    border-radius: 6px;
+    padding: 1.4rem 1.3rem 1.5rem;
+    box-shadow: inset 0 0 0 3px var(--wood-dark), 0 6px 0 var(--wood-dark);
+  }
+  .board::before, .board::after {
+    content: ""; position: absolute; top: 10px;
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #3a2312; box-shadow: inset 1px 1px 0 rgba(255,255,255,.2);
+  }
+  .board::before { left: 10px; } .board::after { right: 10px; }
+  .board .scene { font-size: 2.6rem; line-height: 1; margin-bottom: .6rem; }
+  .board h2 { color: var(--on-wood); font-size: clamp(1.3rem, 5.6vw, 1.65rem); }
+
+  /* ---------- frecce di risposta ---------- */
+  .choices { display: flex; flex-direction: column; gap: 1rem; }
+  .arrow {
+    --tip: 26px;
+    appearance: none; border: 0; cursor: pointer;
+    font: inherit; font-weight: 600; text-align: left;
+    color: var(--on-wood);
+    background-color: var(--moss);
+    background-image: repeating-linear-gradient(179deg, rgba(0,0,0,0) 0 10px, rgba(0,0,0,.08) 10px 12px);
+    padding: 1rem calc(var(--tip) + .9rem) 1rem 1.1rem;
+    min-height: 4rem;
+    clip-path: polygon(0 0, calc(100% - var(--tip)) 0, 100% 50%, calc(100% - var(--tip)) 100%, 0 100%);
+    transition: transform .15s ease, background-color .15s ease;
+  }
+  .arrow.left {
+    padding: 1rem 1.1rem 1rem calc(var(--tip) + .9rem);
+    clip-path: polygon(var(--tip) 0, 100% 0, 100% 100%, var(--tip) 100%, 0 50%);
+    background-color: #5E5432;
+  }
+  @media (prefers-color-scheme: dark) {
+    .arrow { background-color: #3F5A2A; } .arrow.left { background-color: #4E4628; }
+  }
+  .arrow:hover { transform: translateX(4px); }
+  .arrow.left:hover { transform: translateX(-4px); }
+  .arrow:active { transform: scale(.98); }
+  .arrow:focus-visible { outline: none; filter: drop-shadow(0 0 0 var(--flare)) drop-shadow(0 0 3px var(--flare)); }
+  .arrow .key { font-family: 'Alfa Slab One', Georgia, serif; font-weight: 400; margin-right: .45rem; color: #FFD9A8; }
+
+  /* ---------- diario di bordo (commento) ---------- */
+  .note {
+    background: var(--note);
+    border-left: 6px solid var(--flare);
+    border-radius: 3px;
+    padding: 1.3rem 1.25rem;
+    box-shadow: 0 2px 0 rgba(0,0,0,.08);
+    transform: rotate(-.6deg);
+  }
+  .note .you { font-size: .95rem; opacity: .75; margin-bottom: .7rem; }
+  .note .verdict {
+    font-family: 'Caveat', 'Comic Sans MS', cursive;
+    font-size: 1.75rem; line-height: 1.2; color: var(--forest);
+  }
+  .note .odds { margin-top: .9rem; font-weight: 700; color: var(--flare); }
+
+  /* ---------- bottoni principali ---------- */
+  .go {
+    appearance: none; border: 0; cursor: pointer;
+    font-family: 'Alfa Slab One', Georgia, serif; font-size: 1.15rem;
+    color: #fff; background: var(--flare);
+    padding: 1rem 1.4rem; border-radius: 999px;
+    box-shadow: 0 5px 0 #9C3D0E;
+    align-self: stretch;
+    transition: transform .1s ease, box-shadow .1s ease;
+  }
+  .go:active { transform: translateY(4px); box-shadow: 0 1px 0 #9C3D0E; }
+  .go:focus-visible { outline: 3px solid var(--forest); outline-offset: 4px; }
+  .push { margin-top: auto; }
+
+  /* ---------- intro ---------- */
+  .intro .camp { font-size: 4.2rem; line-height: 1; }
+  .intro p.lead { font-size: 1.15rem; max-width: 30ch; }
+  .intro .small { font-size: .95rem; opacity: .75; }
+
+  /* ---------- finale ---------- */
+  .final h1 { font-size: clamp(1.9rem, 8vw, 2.6rem); }
+  .final .msg { font-size: 1.15rem; }
+  .voucher {
+    position: relative;
+    background: var(--note);
+    border: 2px dashed var(--wood);
+    border-radius: 10px;
+    padding: 1.4rem 1.3rem;
+  }
+  .voucher .what { font-size: .95rem; opacity: .75; }
+  .voucher .course {
+    font-family: 'Alfa Slab One', Georgia, serif; color: var(--forest);
+    font-size: clamp(1.35rem, 6vw, 1.7rem); line-height: 1.15; margin: .25rem 0 .7rem;
+  }
+  .voucher dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: .25rem .8rem; }
+  .voucher dt { opacity: .7; }
+  .voucher dd { margin: 0; font-weight: 600; }
+  .slogan {
+    font-family: 'Alfa Slab One', Georgia, serif;
+    font-size: clamp(1.6rem, 7.5vw, 2.3rem);
+    line-height: 1.1;
+    color: var(--on-wood);
+    background: var(--forest);
+    padding: 1.1rem 1.2rem;
+    border-radius: 6px;
+    transform: rotate(-1.5deg);
+    text-align: center;
+  }
+  @media (prefers-color-scheme: dark) { .slogan { background: #2F5A3C; } }
+  .sign {
+    font-family: 'Caveat', 'Comic Sans MS', cursive;
+    font-size: 1.9rem; text-align: right; color: var(--forest);
+  }
+  .restart {
+    appearance: none; background: none; border: 0; cursor: pointer;
+    font: inherit; color: var(--ink); opacity: .7; text-decoration: underline;
+    align-self: center; padding: .5rem;
+  }
+
+  /* entrata dei pannelli */
+  .enter { animation: drop .35s ease-out both; }
+  @keyframes drop { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  /* foglie che cadono nel finale */
+  .leaf {
+    position: fixed; top: -2rem; font-size: 1.6rem; pointer-events: none; z-index: 5;
+    animation: fall linear forwards;
+  }
+  @keyframes fall {
+    to { transform: translate(var(--dx), 110vh) rotate(var(--rot)); opacity: .9; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .enter { animation: none; }
+    .leaf { display: none; }
+    .arrow, .go { transition: none; }
+  }
+
+  @media (min-width: 640px) {
+    main { padding-top: 3rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <!-- INTRO -->
+  <section class="screen intro enter" id="intro">
+    <div class="camp" aria-hidden="true">🏕️</div>
+    <h1>Francesca, sopravviveresti nella natura selvaggia?</h1>
+    <p class="lead">Quattro situazioni estreme. Due possibilità per ognuna. Scegli con saggezza (o almeno provaci).</p>
+    <p class="small">Nessuna formica è stata maltrattata durante la creazione di questo test.</p>
+    <button class="go push" id="startBtn">Inizia la spedizione</button>
+  </section>
+
+  <!-- DOMANDA -->
+  <section class="screen" id="question" hidden>
+    <div class="trail" id="trail" aria-hidden="true"></div>
+    <div class="board" id="board">
+      <div class="scene" id="qEmoji" aria-hidden="true"></div>
+      <h2 id="qText"></h2>
+    </div>
+    <div class="choices" id="choices"></div>
+  </section>
+
+  <!-- COMMENTO -->
+  <section class="screen" id="feedback" hidden>
+    <div class="trail" id="trail2" aria-hidden="true"></div>
+    <h2 id="fbTitle">Diario di bordo</h2>
+    <div class="note">
+      <p class="you" id="fbChoice"></p>
+      <p class="verdict" id="fbText"></p>
+      <p class="odds" id="fbOdds"></p>
+    </div>
+    <button class="go push" id="nextBtn">Prosegui il sentiero</button>
+  </section>
+
+  <!-- FINALE -->
+  <section class="screen final" id="final" hidden>
+    <h1>Vedi?</h1>
+    <p class="msg">Tutte le risposte che hai dato sono assurde. Se ti perdessi nella foresta, non sopravviveresti nemmeno fino all’ora di merenda.</p>
+    <p class="msg">Per fortuna i tuoi grandi amici ti danno una mano e ti fanno questo regalo meraviglioso:</p>
+
+    <div class="voucher">
+      <p class="what">Buono valido per</p>
+      <p class="course" id="vCourse"></p>
+      <dl id="vDetails"></dl>
+    </div>
+
+    <p class="slogan">Sopravvivere is bettere than curare</p>
+    <p class="sign" id="vSign"></p>
+    <button class="restart" id="restartBtn">Rifai il test (tanto non cambia niente)</button>
+  </section>
+
+</main>
+
+<script>
+/* =========================================================
+   MODIFICA QUI: dettagli del regalo
+   Lascia vuoto ("") un campo per non mostrarlo.
+   ========================================================= */
+const REGALO = {
+  corso:  "Corso di sopravvivenza nella natura",
+  dove:   "[luogo del corso]",
+  quando: "[data del corso]",
+  con:    "[ente o istruttore]",
+  firma:  "Matilde & [il tuo nome]"
+};
+
+/* Le 4 situazioni. Tutte le risposte sono volutamente sbagliate. */
+const DOMANDE = [
+  {
+    emoji: "🌲📵",
+    testo: "Ti sei persa nel bosco, sta calando il sole e il telefono non prende. Cosa fai?",
+    risposte: [
+      { t: "Urlo “c’è qualcuno con il Wi-Fi?” agli scoiattoli.",
+        c: "Gli scoiattoli hanno il 5G solo nei parchi di città. E comunque la password non te la danno." },
+      { t: "Mi siedo e aspetto che Google Maps si senta in colpa.",
+        c: "Google Maps non prova sensi di colpa. Tu invece li proverai verso le 3 di notte." }
+    ],
+    odds: "Probabilità di sopravvivenza: 41%"
+  },
+  {
+    emoji: "🫐❓",
+    testo: "Hai una fame tremenda. Davanti a te c’è un cespuglio di bacche viola mai viste prima.",
+    risposte: [
+      { t: "Le assaggio tutte, una per una: è come un menù degustazione.",
+        c: "Menù degustazione, sì. Con dessert a sorpresa in pronto soccorso." },
+      { t: "Apro l’app delle consegne e scrivo “terzo albero a sinistra”.",
+        c: "Il rider è ancora lì che gira in tondo. Ti saluta, comunque." }
+    ],
+    odds: "Probabilità di sopravvivenza: 17%"
+  },
+  {
+    emoji: "🔥🥶",
+    testo: "Arriva la notte e fa un freddo cane. Come accendi il fuoco?",
+    risposte: [
+      { t: "Fisso la legna intensamente finché non si imbarazza e prende fuoco da sola.",
+        c: "La legna non si è imbarazzata. Ti ha guardata male, però." },
+      { t: "Strofino due bastoncini… di pesce surgelati.",
+        c: "Hai ottenuto due bastoncini di pesce un po’ più tiepidi. È un inizio, ma non è un fuoco." }
+    ],
+    odds: "Probabilità di sopravvivenza: 6%"
+  },
+  {
+    emoji: "🐻👀",
+    testo: "Un orso enorme si avvicina lentamente al tuo accampamento.",
+    risposte: [
+      { t: "Gli offro un abbraccio: secondo me anche lui ha solo bisogno d’affetto.",
+        c: "L’orso ha apprezzato il gesto. Soprattutto la parte in cui ti sei avvicinata da sola." },
+      { t: "Mi fingo un cespuglio e canticchio per sembrare più credibile.",
+        c: "I cespugli non canticchiano. L’orso lo sa. Ora lo sai anche tu." }
+    ],
+    odds: "Probabilità di sopravvivenza: 0,3%"
+  }
+];
+
+/* ========================================================= */
+
+const $ = (id) => document.getElementById(id);
+let step = 0;
+
+function show(id) {
+  document.querySelectorAll(".screen").forEach(s => {
+    s.hidden = s.id !== id;
+    s.classList.remove("enter");
+  });
+  const el = $(id);
+  void el.offsetWidth;
+  el.classList.add("enter");
+  window.scrollTo(0, 0);
+}
+
+function drawTrail(el, current, answered) {
+  let html = "";
+  for (let i = 0; i < DOMANDE.length; i++) {
+    const done = i < current || (i === current && answered);
+    const cls = done ? "done" : (i === current ? "now" : "");
+    html += `<span class="dot ${cls}"></span>`;
+    html += `<span class="seg ${i < current ? "done" : ""}"></span>`;
+  }
+  html += `<span class="flag">🚩</span>`;
+  el.innerHTML = html;
+}
+
+function renderQuestion() {
+  const q = DOMANDE[step];
+  drawTrail($("trail"), step, false);
+  $("qEmoji").textContent = q.emoji;
+  $("qText").textContent = q.testo;
+  const box = $("choices");
+  box.innerHTML = "";
+  q.risposte.forEach((r, i) => {
+    const b = document.createElement("button");
+    b.className = "arrow" + (i === 0 ? " left" : "");
+    b.innerHTML = `<span class="key">${i === 0 ? "A" : "B"}</span>`;
+    b.appendChild(document.createTextNode(r.t));
+    b.addEventListener("click", () => answer(i));
+    box.appendChild(b);
+  });
+  show("question");
+}
+
+function answer(i) {
+  const q = DOMANDE[step];
+  drawTrail($("trail2"), step, true);
+  $("fbTitle").textContent = `Diario di bordo, giorno ${step + 1}`;
+  $("fbChoice").textContent = `Hai scelto: ${q.risposte[i].t}`;
+  $("fbText").textContent = q.risposte[i].c;
+  $("fbOdds").textContent = q.odds;
+  $("nextBtn").textContent = step === DOMANDE.length - 1 ? "Scopri il tuo destino" : "Prosegui il sentiero";
+  show("feedback");
+}
+
+function renderFinal() {
+  $("vCourse").textContent = REGALO.corso;
+  const rows = [["Dove", REGALO.dove], ["Quando", REGALO.quando], ["Con", REGALO.con]]
+    .filter(([, v]) => v && v.trim());
+  $("vDetails").innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd></dd>`).join("");
+  $("vDetails").querySelectorAll("dd").forEach((dd, i) => dd.textContent = rows[i][1]);
+  $("vSign").textContent = REGALO.firma ? `Con affetto, ${REGALO.firma}` : "";
+  show("final");
+  leaves();
+}
+
+function leaves() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const set = ["🍃", "🍂", "🌿", "🍁"];
+  for (let i = 0; i < 26; i++) {
+    const l = document.createElement("span");
+    l.className = "leaf";
+    l.textContent = set[i % set.length];
+    l.style.left = Math.random() * 100 + "vw";
+    l.style.setProperty("--dx", (Math.random() * 120 - 60) + "px");
+    l.style.setProperty("--rot", (Math.random() * 540 - 270) + "deg");
+    l.style.animationDuration = (3.5 + Math.random() * 3) + "s";
+    l.style.animationDelay = (Math.random() * 1.8) + "s";
+    document.body.appendChild(l);
+    l.addEventListener("animationend", () => l.remove());
+  }
+}
+
+$("startBtn").addEventListener("click", () => { step = 0; renderQuestion(); });
+$("nextBtn").addEventListener("click", () => {
+  step++;
+  if (step < DOMANDE.length) renderQuestion(); else renderFinal();
+});
+$("restartBtn").addEventListener("click", () => { step = 0; show("intro"); });
+</script>
+</body>
+</html>
